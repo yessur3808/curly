@@ -12,7 +12,53 @@
 
     <link href='css/resumee.css' media='screen,print' rel='stylesheet' type='text/css' />
 
+	<style type="text/css">
 	
+.hip {
+  display: inline-block;
+  height: 180px;
+  width: 180px;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+}
+.hip:after {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+.hip:hover img {
+  -webkit-filter: blur(0);
+}
+.hip:hover button {
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-filter: blur(0);
+}
+.hip img {
+  -webkit-filter: grayscale(0.5) blur(7px);
+  position: absolute;
+  z-index: 5;
+  top: -10px;
+  left: -10px;
+  width: 200px;
+  height: 200px;
+}
+.hip button {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  font-weight: 400;
+  letter-spacing: 2px;
+  padding: .5em 1em;
+  position: relative;
+  z-index: 10;
+  vertical-align: middle;
+  text-transform: uppercase;
+  font-size: .7em;
+}
+
+	</style>
 	
 	
     <script type="text/javascript">
@@ -129,7 +175,10 @@
       </div-->
 
       
-
+<div class='hip'>
+  <img onclick="location.href='index.html'" src='Pics/Y.png' />
+  <button onclick="location.href='index.html'">Back to Main Site</button>
+</div>
 
     </div>
   </body>
