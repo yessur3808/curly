@@ -1,29 +1,21 @@
 <?php
 
-function getUserIP()
-{
-   if (!empty($_SERVER["HTTP_CLIENT_IP"]))
-{
- //check for ip from share internet
- $ip = $_SERVER["HTTP_CLIENT_IP"];
-}
-elseif (!empty($_SERVER["HTTP_X_FORWARDED_FOR"]))
-{
- // Check for the Proxy User
- $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-}
-else
-{
- $ip = $_SERVER["REMOTE_ADDR"];
+function getUserIP(){
+if (isset($_SERVER['HTTP_CLIENT_IP']) && array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+    $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $ips = array_map('trim', $ips);
+    $ip = $ips[0];
+} else {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 }
 
-// This will print user's real IP Address
-// does't matter if user using proxy or not.
-echo $ip;
+$ip = filter_var($ip, FILTER_VALIDATE_IP);
+$ip = ($ip === false) ? '0.0.0.0' : $ip;
+
+
 }
-
-
-
 
 getUserIP();
 
