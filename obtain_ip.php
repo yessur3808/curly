@@ -1,67 +1,36 @@
 <?php
 
-function get_ip_address() {
-// check for shared internet/ISP IP
-	if (!empty($_SERVER['HTTP_CLIENT_IP']) && validate_ip($_SERVER['HTTP_CLIENT_IP'])) {
-		return $_SERVER['HTTP_CLIENT_IP'];
-	}
- 
-	// check for IPs passing through proxies
-	if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		// check if multiple ips exist in var
-		if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') !== false) {
-			$iplist = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-			foreach ($iplist as $ip) {
-				if (validate_ip($ip))
-					return $ip;
-			}
-		} else {
-			if (validate_ip($_SERVER['HTTP_X_FORWARDED_FOR']))
-				return $_SERVER['HTTP_X_FORWARDED_FOR'];
-		}
-	}
-	if (!empty($_SERVER['HTTP_X_FORWARDED']) && validate_ip($_SERVER['HTTP_X_FORWARDED']))
-		return $_SERVER['HTTP_X_FORWARDED'];
-	if (!empty($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']) && validate_ip($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']))
-		return $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-	if (!empty($_SERVER['HTTP_FORWARDED_FOR']) && validate_ip($_SERVER['HTTP_FORWARDED_FOR']))
-		return $_SERVER['HTTP_FORWARDED_FOR'];
-	if (!empty($_SERVER['HTTP_FORWARDED']) && validate_ip($_SERVER['HTTP_FORWARDED']))
-		return $_SERVER['HTTP_FORWARDED'];
- 
-	// return unreliable ip since all else failed
-	return $_SERVER['REMOTE_ADDR'];
-}
- 
-/**
- * Ensures an ip address is both a valid IP and does not fall within
- * a private network range.
- */
-function validate_ip($ip) {
-	if (strtolower($ip) === 'unknown')
-		return false;
- 
-	// generate ipv4 network address
-	$ip = ip2long($ip);
- 
-	// if the ip is set and not equivalent to 255.255.255.255
-	if ($ip !== false && $ip !== -1) {
-		// make sure to get unsigned long representation of ip
-		// due to discrepancies between 32 and 64 bit OSes and
-		// signed numbers (ints default to signed in PHP)
-		$ip = sprintf('%u', $ip);
-		// do private network range checking
-		if ($ip >= 0 && $ip <= 50331647) return false;
-		if ($ip >= 167772160 && $ip <= 184549375) return false;
-		if ($ip >= 2130706432 && $ip <= 2147483647) return false;
-		if ($ip >= 2851995648 && $ip <= 2852061183) return false;
-		if ($ip >= 2886729728 && $ip <= 2887778303) return false;
-		if ($ip >= 3221225984 && $ip <= 3221226239) return false;
-		if ($ip >= 3232235520 && $ip <= 3232301055) return false;
-		if ($ip >= 4294967040) return false;
-	}
-	return true;
-}
+function ip_address() {
+  $ip_address = &drupal_static(__FUNCTION__);
 
+  if (!isset($ip_address)) {
+    $ip_address = $_SERVER['REMOTE_ADDR'];
 
+    if (variable_get('reverse_proxy', 0)) {
+      $reverse_proxy_header = variable_get('reverse_proxy_header', 'HTTP_X_FORWARDED_FOR');
+      if (!empty($_SERVER[$reverse_proxy_header])) {
+        // If an array of known reverse proxy IPs is provided, then trust
+        // the XFF header if request really comes from one of them.
+        $reverse_proxy_addresses = variable_get('reverse_proxy_addresses', array());
+
+        // Turn XFF header into an array.
+        $forwarded = explode(',', $_SERVER[$reverse_proxy_header]);
+
+        // Trim the forwarded IPs; they may have been delimited by commas and spaces.
+        $forwarded = array_map('trim', $forwarded);
+
+        // Tack direct client IP onto end of forwarded array.
+        $forwarded[] = $ip_address;
+
+        // Eliminate all trusted IPs.
+        $untrusted = array_diff($forwarded, $reverse_proxy_addresses);
+
+        // The right-most IP is the most specific we can trust.
+        $ip_address = array_pop($untrusted);
+      }
+    }
+  }
+
+  return $ip_address;
+}
 ?>
