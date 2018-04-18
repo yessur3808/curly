@@ -51,7 +51,7 @@
 
 .service-details {
   /*width: 460px;*/
-  height: 180px;
+  height: 220px;
   /*height: 230px;*/
   overflow: hidden;
   position: relative;
@@ -62,8 +62,8 @@
   top: 0;
   left: 0;
   height: inherit;
-  width: 60%;
-  height: 70%;
+  width: 80%;
+  height: 87%;
   float: left;
   transition: all 0.8s;
   -moz-transition: all 0.8s;
@@ -195,7 +195,7 @@
 .service-details .service-hover-text p {
   padding-top: 13px;
   font-size: 12px;
-  line-height: 20px;
+  line-height: 13px;
   font-family: "Open Sans";
 }
 
