@@ -1,6 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,700);
 
 
+.progress-bar-success {
+    background-color: #5c93b8;
+}
+
 .contain {
   max-width: 500px;
   margin-left: auto;
