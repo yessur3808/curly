@@ -1,5 +1,0 @@
-RewriteEngine Off
-RewriteCond %{SCRIPT_FILENAME} !-d
-RewriteRule ^([^.]+)$ $1.html [NC,L]
-
-Options All -Indexes
